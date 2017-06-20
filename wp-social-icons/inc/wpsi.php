@@ -16,7 +16,8 @@ class MgWpsi {
     function wp_social_icons_shortcode($atts){
         wp_enqueue_style( 'mg_wpsi_icons', plugins_url() . '/wp-social-icons/assets/icons/style.css', array(), '1.0' );
         $options = get_option($this->option_name);
-        $socials = json_decode($options['socials']);
+        $scl = $options['socials'];
+        $socials = json_decode($scl);
         $output = '<style>.mg-wpsi{ list-style: none !important; min-height:10px; } .mg-wpsi li{ float: left !important; margin: 0px 5px !important; } .mg-wpsi li a{ text-decoration: none; } .mg-wpsi a i { color:'.$options['color'].'; font-size:'.$options['icon_size'].'px !important; } .mg-wpsi a:hover i { color:'.$options['color_hover'].' }</style>';
         $output .= '<ul class="mg-wpsi">';
 
@@ -27,7 +28,7 @@ class MgWpsi {
         }
         $output .= '</ul>';
         return $output;
-    }	
+    }
 
     // White list our options using the Settings API
     public function admin_init() {
@@ -80,25 +81,26 @@ class MgWpsi {
                     </tr>                    <tr><th scope="row" colspan="2">Social Icons:</th></tr>
                     <tr><td colspan="2">
                         <?php
-                        $socials = json_decode($options['socials']);
+                        $scl = $options['socials'];
+                        $socials = json_decode($scl);
                         $output = '';
                         $output .='<div class="mg-new-field"><input type="button" class="mg-add-new button button-primary" value="Add New"></div><div class="mg-social-fields">';
-                        
+
                         if( is_array ( $socials ) && count( $socials ) > 0 ) {
                             foreach( $socials as $social ) {
-                                
+
                                 $output .= '<div class="mg-new-fields"><input type="text" name="' . esc_attr( $this->option_name . '[socials][icon][]' ) . '" class="mg-icon-picker"  value="'.$social->icon.'">';
-                                
+
                                 $output .= '<input type="text" name="' . esc_attr( $this->option_name . '[socials][link][]' ) . '" class="social_link" value="'.$social->link.'"><input type="button" class="button" value="Remove" /></div>';
 
                             }
                         }
                         else {
                                 $output .= '<div class="mg-new-fields"><input type="text" name="' . esc_attr( $this->option_name . '[socials][icon][]' ) . '" class="mg-icon-picker"  value="">';
-                                
+
                                 $output .= '<input type="text" placeholder="Enter your url here" name="' . esc_attr( $this->option_name . '[socials][link][]' ) . '" class="' . esc_attr( 'social_link' ) . '"  value=""><input type="button" class="button" value="Remove" /></div>';
                         }
-                        $output .= '</div>';                        
+                        $output .= '</div>';
                         echo $output;
                         ?>
                     </td></tr>
@@ -159,9 +161,9 @@ class MgWpsi {
         $valid['color_hover'] = sanitize_text_field($input['color_hover']);
         $valid['icon_size'] = sanitize_text_field($input['icon_size']);
         $valid['socials'] = json_encode($out);
-		
+
         return $valid;
     }
-	
+
 
 }
